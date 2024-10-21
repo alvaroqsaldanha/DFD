@@ -1,4 +1,4 @@
-# Detecting and Correcting Adversarial Images
+# Exploring Self-Supervised Vision Transformers for Deepfake Detection
 
 Implementation of the paper:  <a href="https://arxiv.org/abs/2405.00355">Exploring Self-Supervised Vision Transformers for Deepfake Detection: A Comparative Analysis</a> (IJCB 2024).
 
