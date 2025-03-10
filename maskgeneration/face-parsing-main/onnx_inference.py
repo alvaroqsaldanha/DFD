@@ -32,6 +32,7 @@ def inference(config):
     output_path = config.output
     input_path = config.input
     weight = config.onnx_weight
+    masktype = config.masktype
 
     os.makedirs(output_path, exist_ok=True)
 
@@ -54,6 +55,7 @@ def inference(config):
         vis_parsing_maps(
             resized_image,
             predicted_mask,
+            masktype = masktype,
             save_image=True,
             save_path=os.path.join(output_path, filename),
         )
@@ -69,6 +71,7 @@ def parse_args():
     )
     parser.add_argument("--input", type=str, default="./assets/images/", help="path to an image or a folder of images")
     parser.add_argument("--output", type=str, default="./assets/", help="path to save model outputs")
+    parser.add_argument("--masktype", type=str, default="bw", help="type of generated mask (bw = black and white, color = full color)")
 
     return parser.parse_args()
 

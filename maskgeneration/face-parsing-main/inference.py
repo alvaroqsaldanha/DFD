@@ -27,6 +27,7 @@ def inference(config):
     input_path = config.input
     weight = config.weight
     model = config.model
+    masktype = config.masktype
 
     output_path = os.path.join(output_path, model)
     os.makedirs(output_path, exist_ok=True)
@@ -37,7 +38,7 @@ def inference(config):
     model.to(device)
 
     if os.path.exists(weight):
-        model.load_state_dict(torch.load(weight))
+        model.load_state_dict(torch.load(weight,map_location=torch.device(device)))
     else:
         raise ValueError(f"Weights not found from given path ({weight})")
 
@@ -60,6 +61,7 @@ def inference(config):
         vis_parsing_maps(
             resized_image,
             predicted_mask,
+            masktype = masktype,
             save_image=True,
             save_path=os.path.join(output_path, filename),
         )
@@ -76,6 +78,7 @@ def parse_args():
     )
     parser.add_argument("--input", type=str, default="./assets/images/", help="path to an image or a folder of images")
     parser.add_argument("--output", type=str, default="./assets/", help="path to save model outputs")
+    parser.add_argument("--masktype", type=str, default="bw", help="type of generated mask (bw = black and white, color = full color)")
 
     return parser.parse_args()
 

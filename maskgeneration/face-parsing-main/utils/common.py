@@ -23,6 +23,28 @@ ATTRIBUTES = [
     'hat'
 ]
 
+COLOR_LIST_BW = [
+    [0, 0, 0],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [255, 255, 255],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+]
+
 COLOR_LIST = [
     [0, 0, 0],
     [255, 85, 0],
@@ -46,7 +68,7 @@ COLOR_LIST = [
 ]
 
 
-def vis_parsing_maps(image, segmentation_mask, save_image=False, save_path="result.png"):
+def vis_parsing_maps(image, segmentation_mask, masktype, save_image=False, save_path="result.png"):
     # Create numpy arrays for image and segmentation mask
     image = np.array(image).copy().astype(np.uint8)
     segmentation_mask = segmentation_mask.copy().astype(np.uint8)
@@ -56,24 +78,19 @@ def vis_parsing_maps(image, segmentation_mask, save_image=False, save_path="resu
 
     num_classes = np.max(segmentation_mask)
 
+    colors = COLOR_LIST_BW if masktype == "bw" else COLOR_LIST
+
     for class_index in range(1, num_classes + 1):
         class_pixels = np.where(segmentation_mask == class_index)
-        segmentation_mask_color[class_pixels[0], class_pixels[1], :] = COLOR_LIST[class_index]
+        segmentation_mask_color[class_pixels[0], class_pixels[1], :] = colors[class_index]
 
     segmentation_mask_color = segmentation_mask_color.astype(np.uint8)
 
-    # Convert image to BGR format for blending
-    bgr_image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-    # Blend the image with the segmentation mask
-    blended_image = cv2.addWeighted(bgr_image, 0.6, segmentation_mask_color, 0.4, 0)
-
     # Save the result if required
     if save_image:
-        cv2.imwrite(save_path, segmentation_mask)
-        cv2.imwrite(save_path, blended_image, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+        cv2.imwrite(save_path, segmentation_mask_color)
 
-    return blended_image
+    return segmentation_mask_color
 
 
 def letterbox(image, target_size, fill_color=(0, 0, 0)):
